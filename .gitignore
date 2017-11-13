@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+env/
+venv/
+bin/
+include/
+lib/
+lib64/
+pyvenv.cfg
+
+# Installer logs
+pip-log.txt
+
+# PyCharm
+.idea/
+
+# Logging
+*.log
+
+# Documents
+docs/todo
+*.pdf
+
+# LaTeX
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.bbl
+*.blg
+
+# Sphinx
+docs/_build

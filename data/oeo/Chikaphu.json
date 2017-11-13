@@ -1,0 +1,13 @@
+{
+  "base_stats": {
+    "attack": 55,
+    "defence": 40,
+    "hp": 35,
+    "sp_attack": 50,
+    "sp_defence": 50,
+    "speed": 90
+  },
+  "elements": [
+    "Electric"
+  ]
+}

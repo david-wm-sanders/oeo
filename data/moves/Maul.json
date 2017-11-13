@@ -1,0 +1,8 @@
+{
+  "name": "Maul",
+  "element": "Normal",
+  "category": "Physical",
+  "power": 35,
+  "accuracy": 95,
+  "makes_contact": true
+}

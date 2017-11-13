@@ -1,0 +1,15 @@
+{
+  "name": "Example",
+  "element": "",
+  "category": "",
+  "power": 0,
+  "accuracy": 0,
+  "makes_contact": false,
+  "priority": 0,
+  "damage_function": "Standard",
+  "effect": "",
+  "effect_chance": 100,
+  "usable_outside_of_battle": false,
+  "stages": ["Charge", "Perform", "Recover"],
+  "multistrike": "3-5"
+}

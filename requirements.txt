@@ -1,0 +1,4 @@
+﻿axel==0.0.7
+namedlist==1.7
+pqdict==1.0.0
+six==1.11.0
