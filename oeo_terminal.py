@@ -7,7 +7,8 @@ from core import Oeo, Stats, Element, Move, Item
 from battlesim import Battle, Action
 
 logger = logging.getLogger(__name__)
-logging.config.fileConfig("logging_terminal.conf", disable_existing_loggers=False)
+logging.config.fileConfig("logging_terminal.conf",
+                          disable_existing_loggers=False)
 logger.debug(f"Started logging in {__file__}")
 
 # spark_id, buzz_id = uuid4().hex[8:-8], uuid4().hex[8:-8]
@@ -21,9 +22,11 @@ def main():
     # path = Path("./saves/David/oeo/player")
 
     # evs = Stats(74, 195, 86, 48, 84, 23)
-    # ivs = Stats(hp=24, attack=12, defence=30, sp_attack=16, sp_defence=23, speed=5)
+    # ivs = Stats(hp=24, attack=12, defence=30,
+    #             sp_attack=16, sp_defence=23, speed=5)
 
-    # gla = Oeo(gla_id, "Icicle", "gla", 78, 78, None, ivs, evs, ["Freeze Bite"], None, None)
+    # gla = Oeo(gla_id, "Icicle", "gla", 78, 78, None, ivs, evs,
+    #           ["Freeze Bite"], None, None)
     # # gla = Oeo.load(path / "409a43ec9b5fd540.json")
     # gla._oeo_id = gla_id
     # logger.debug(f"{gla}")
@@ -68,7 +71,8 @@ def choose_oeo_to_deploy(team_id, non_fielded_team, empty_positions):
     else:
         raise Exception("Invalid team_id")
 
-    print(f"{team_id} can deploy {non_fielded_team} to empty positions {empty_positions}")
+    print(f"{team_id} can deploy {non_fielded_team} "
+          f"to empty positions {empty_positions}")
     print("Deploy>> oeo id>position, oeo id>position, ...")
     i = input("Deploy>> ")
     i = i.replace(" ", "")
