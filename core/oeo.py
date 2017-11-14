@@ -172,18 +172,16 @@ class Oeo(object):
         self._evs = value
 
     def __repr__(self):
-        return "Oeo(ID:%r, Name:%r, Species:%r, Element(s):%r, Lvl:%r, XP:%r, HP:%r/%r, BaseStats:%r, IVs:%r, EVs:%r, "\
+        return "Oeo(ID:%r, Name:%r, Species:%r, Element(s):%r, Lvl:%r, XP:%r, HP:%r/%r, BaseStats:%r, IVs:%r, EVs:%r, " \
                "Moves:%r, Conditions:%r, HeldItem:%r)" % (self._oeo_id, self._name, self._species, self._elements,
                                                           self._level, self._xp, self._current_hp, self.full_hp,
                                                           self._base_stats, self._ivs, self._evs,
                                                           self._moves, self._status_conditions, self._held_item)
 
     def __str__(self):
-        return "{0} the {1} <Lvl:{2}, XP:{3}, HP:{4}/{5}, Attack:{6}, Defence:{7}, Sp.Attack:{8}, " \
-               "Sp.Defence:{9}, Speed:{10}>".format(self._name if self._name else self._oeo_id,
-                                                    self._species, self._level, self._xp, self._current_hp,
-                                                    self.full_hp, self.attack, self.defence, self.sp_attack,
-                                                    self.sp_defence, self.speed)
+        return f"{self._name if self._name else self._oeo_id} the {self._species} <Lvl:{self._level}, XP:{self._xp}, " \
+                f"HP:{self._current_hp}/{self.full_hp}, Attack:{self.attack}, Defence:{self.defence}, Sp.Attack:{self.sp_attack}, " \
+                f"Sp.Defence:{self.sp_defence}, Speed:{self.speed}>"
 
     def _calculate_hp_stat(self):
         """
@@ -242,7 +240,7 @@ class Oeo(object):
         return cls(oeo_id, name, species, level, xp, current_hp, ivs, evs, moves, status_conditions, held_item)
 
     def save(self, dir_path):
-        path = dir_path / "{0}.json".format(self._oeo_id)
+        path = dir_path / f"{self._oeo_id}.json"
         o = {"oeo_id": self._oeo_id, "name": self._name, "species": self._species, "level": self._level, "xp": self._xp,
              "current_hp": self._current_hp, "ivs": self._ivs.to_dict(), "evs": self._evs.to_dict(),
              "moves": self._moves, "held_item": self._held_item}
@@ -253,12 +251,12 @@ class Oeo(object):
 
     @staticmethod
     def _load_oeo_base(species):
-        o = Oeo.data_root / "{0}.json".format(species)
+        o = Oeo.data_root / f"{species}.json"
         if o.exists():
             with o.open(encoding="utf-8") as f:
                 oeo_data = json.load(f)
         else:
-            raise Exception("{0} does not exist".format(o))
+            raise Exception(f"{o} does not exist")
         try:
             elements = []
             elem = oeo_data["elements"]
@@ -266,7 +264,7 @@ class Oeo(object):
                 elements.append(Element[element])
             base_stats = Stats.from_dict(oeo_data["base_stats"])
         except KeyError as e:
-            logger.error("Oeo data for '{0}' is missing a value for {1}".format(species, e))
-            raise Exception("Oeo data for '{0}' is missing a value for {1}".format(species, e)) from e
+            logger.error(f"Oeo data for '{species}' is missing a value for {e}")
+            raise Exception(f"Oeo data for '{species}' is missing a value for {e}") from e
         else:
             return elements, base_stats

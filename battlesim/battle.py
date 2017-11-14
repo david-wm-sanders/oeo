@@ -31,7 +31,7 @@ class Battle(object):
         assert isinstance(b_max_fielded, int), "'b_max_fielded' is not an int"
         # Throw error if each oeo_id is not unique between teams
         if a & b:
-            raise ValueError("{0} oeo_id(s) not unique between teams".format(a & b))
+            raise ValueError(f"{a & b} oeo_id(s) not unique between teams")
 
         self._oeo = oeos
         self._a_id = a_id
@@ -81,15 +81,15 @@ class Battle(object):
     def run(self):
         """
         Run the battle
-        
+
         :return: id of the victor
         :rtype: str
         """
-        logger.info("{0} vs {1}...".format(self._a_id, self._b_id))
+        logger.info(f"{self._a_id} vs {self._b_id}...")
         ta = {oeo_id: self._oeo[oeo_id] for oeo_id in self._a}
         tb = {oeo_id: self._oeo[oeo_id] for oeo_id in self._b}
-        logger.debug("{0}'s team:\n{1}".format(self._a_id, ta))
-        logger.debug("{0}'s team:\n{1}".format(self._b_id, tb))
+        logger.debug(f"{self._a_id}'s team:\n{ta}")
+        logger.debug(f"{self._b_id}'s team:\n{tb}")
 
         # Add the BEGIN_TURN SimEvent for turn 1
         self._pending_sim_events.additem(SimEvent(SimEventType.BeginTurn), 1)
@@ -109,27 +109,27 @@ class Battle(object):
                 victor = "DRAW"
                 break
             elif not any(self._oeo[oeo_id].conscious for oeo_id in self._a):
-                logger.info("{0}'s team are unconscious, {1} wins the battle".format(self._a_id, self._b_id))
+                logger.info(f"{self._a_id}'s team are unconscious, {self._b_id} wins the battle")
                 victor = self._b_id
                 break
             elif not any(self._oeo[oeo_id].conscious for oeo_id in self._b):
-                logger.info("{0}'s team are unconscious, {1} wins the battle".format(self._b_id, self._a_id))
+                logger.info(f"{self._b_id}'s team are unconscious, {self._a_id} wins the battle")
                 victor = self._a_id
                 break
 
             # Let both sides choose oeo to deploy
             self._choose_deployments()
-            logger.debug("{0}'s side: {1}".format(self._a_id, self._field[self._a_id]))
-            logger.debug("{0}'s side: {1}".format(self._b_id, self._field[self._b_id]))
+            logger.debug(f"{self._a_id}'s side: {self._field[self._a_id]}")
+            logger.debug(f"{self._b_id}'s side: {self._field[self._b_id]}")
 
             # Check both sides of the field: if team A side is empty, then end as win for team B
             #                                if team B side is empty, then end as win for team A
             if self._field[self._a_id].is_empty():
-                logger.info("{0} yields, {1} wins the battle".format(self._a_id, self._b_id))
+                logger.info(f"{self._a_id} yields, {self._b_id} wins the battle")
                 victor = self._b_id
                 break
             elif self._field[self._b_id].is_empty():
-                logger.info("{0} yields, {1} wins the battle".format(self._b_id, self._a_id))
+                logger.info(f"{self._b_id} yields, {self._a_id} wins the battle")
                 victor = self._a_id
                 break
 
@@ -151,18 +151,18 @@ class Battle(object):
                 # event_complete = self._process_run
                 pass
             else:
-                raise ValueError("Invalid event_type: {0}".format(event))
+                raise ValueError(f"Invalid event_type: {event}")
 
             self._processed_sim_events.append((event_priority, event, event_complete))
 
-        logger.debug("Pending events: {0}".format(self._pending_sim_events))
-        logger.info("Processed events: {0}".format(self._processed_sim_events))
+        logger.debug(f"Pending events: {self._pending_sim_events}")
+        logger.info(f"Processed events: {self._processed_sim_events}")
         return victor
 
     def _process_begin_turn(self):
         # Increment the turn number and add the BeginTurn SimEvent for the next turn
         self._turn_number += 1
-        logger.debug("Processing BeginTurn({0}) SimEvent".format(self._turn_number))
+        logger.debug(f"Processing BeginTurn({self._turn_number}) SimEvent")
         self._pending_sim_events.additem(SimEvent(SimEventType.BeginTurn), self._turn_number + 1)
 
         # todo: Update status conditions - burn, poison, landing from flight, then remove unconscious oeo from field
@@ -178,16 +178,16 @@ class Battle(object):
         user_is_fielded = self._is_fielded(user_id)
         target_is_fielded = self._is_fielded(target_id)
         if user_is_fielded and target_is_fielded:
-            logger.info("{0} attacks {1} using {2}".format(user_id, target_id, move_id))
+            logger.info(f"{user_id} attacks {target_id} using {move_id}")
             df_id = getattr(move, "df_id", "Standard")
             damage_function = get_damage_function(df_id)
             damage = damage_function(user, move, target)
             hp = target.current_hp
             target.current_hp -= damage
-            logger.info("{0}'s HP = {1}-{2} = {3}".format(target_id, hp, damage, target.current_hp))
+            logger.info(f"{target_id}'s HP = {hp}-{damage} = {target.current_hp}")
             return 1
         else:
-            logger.debug("User on field = {0}, Target on field = {1}".format(user_is_fielded, target_is_fielded))
+            logger.debug(f"User on field = {user_is_fielded}, Target on field = {target_is_fielded}")
             return -1
 
     def _process_use_item(self, item, target):
@@ -209,7 +209,7 @@ class Battle(object):
         :param speed_priority: the speed_priority of the oeo undertaking the event
         :return: the priority of the event to be actioned
         """
-        return float("{0}.{1}{2}".format(turn, self._turn_stage_map[priority], self._turn_spi_map[speed_priority]))
+        return float(f"{turn}.{self._turn_stage_map[priority]}{self._turn_spi_map[speed_priority]}")
 
     def _remove_unconscious_oeo(self):
         """
@@ -236,15 +236,15 @@ class Battle(object):
         """
         for team_id in [self._a_id, self._b_id]:
             empty_positions = self._field[team_id].empty_positions
-            logger.debug("Empty positions on {0}'s side: {1}".format(team_id, empty_positions))
+            logger.debug(f"Empty positions on {team_id}'s side: {empty_positions}")
             if empty_positions:
                 fielded = self._field[team_id].fielded
                 benched = [oeo_id for oeo_id in self.teams[team_id] if oeo_id not in fielded and
                            self._oeo[oeo_id].conscious]
-                logger.debug("Benched on {0}'s side: {1}".format(team_id, benched))
+                logger.debug(f"Benched on {team_id}'s side: {benched}")
                 if benched:
                     deployments = self._poll_deployments(team_id, benched, empty_positions)
-                    logger.debug("{0}'s oeo to deploy: {1}".format(team_id, deployments))
+                    logger.debug(f"{team_id}'s oeo to deploy: {deployments}")
                     for position, oeo_id in deployments.items():
                         self._field.deploy(team_id, oeo_id, position)
 
@@ -253,21 +253,20 @@ class Battle(object):
         Polls for deployments for team_id
         :return: dict of position:oeo_id
         """
-        logger.debug("Polling for deployments from {0}".format(team_id))
+        logger.debug(f"Polling for deployments from {team_id}")
         results = self.event_choose_deployments(team_id, list(non_fielded_team), empty_positions)
         flag, result, handler = results[0]
         if flag:
             for position, oeo_id in result.items():
                 # Ensure that each oeo is only deployed to one field position at most
                 if list(result.values()).count(oeo_id) > 1:
-                    raise Exception("{0} can not be deployed to more than one field position".format(oeo_id))
+                    raise Exception(f"{oeo_id} can not be deployed to more than one field position")
                 # Ensure 0 >= position < len(self._field[team_id])
                 if position < 0 or position >= len(self._field[team_id]):
-                    raise Exception("Field position {0} is out of bounds (0-{1})".format(position,
-                                                                                         len(self._field[team_id]) - 1))
+                    raise Exception(f"Field position {position} is out of bounds (0-{len(self._field[team_id]) - 1})")
                 # Ensure oeo_id is in self.team[team_id]
                 if oeo_id not in self.teams[team_id]:
-                    raise Exception("{0} is not in {1}'s team".format(oeo_id, team_id))
+                    raise Exception(f"{oeo_id} is not in {team_id}'s team")
             return result
         else:
             raise Exception("Exception in choose_deployments handler") from result
@@ -279,7 +278,7 @@ class Battle(object):
         # Create the speed_priority_list for this turn
         oeo_against_speed = [(oeo_id, oeo.speed) for oeo_id, oeo in self._oeo.items()]
         oeo_against_speed.sort(key=itemgetter(1), reverse=True)
-        logger.debug("Speed Priority List: {0}".format(oeo_against_speed))
+        logger.debug(f"Speed Priority List: {oeo_against_speed}")
         speed_priority_list = [t[0] for t in oeo_against_speed]
 
         a_fielded = self._field[self._a_id].fielded
@@ -289,7 +288,7 @@ class Battle(object):
         # dictionary
         action_map = {oeo_id: None for oeo_id in itertools.chain(a_fielded, b_fielded)}
         # todo: Update action_map from future_actions dictionary
-        logger.debug("Initial action map for turn {0}: {1}".format(self._turn_number, action_map))
+        logger.debug(f"Initial action map for turn {self._turn_number}: {action_map}")
 
         # Call event_choose_actions for each team for oeo that do not have an action to perform (action is None)
         a_oeo_requiring_actions = [oeo_id for oeo_id, action in action_map.items() if (oeo_id in a_fielded) and
@@ -298,20 +297,20 @@ class Battle(object):
         b_oeo_requiring_actions = [oeo_id for oeo_id, action in action_map.items() if (oeo_id in b_fielded) and
                                    (action is None)]
         b_oeo_requiring_actions.sort(key=lambda x: self._oeo[x].speed, reverse=True)
-        logger.debug("{0}'s oeo requiring actions: {1}".format(self._a_id, a_oeo_requiring_actions))
-        logger.debug("{0}'s oeo requiring actions: {1}".format(self._b_id, b_oeo_requiring_actions))
+        logger.debug(f"{self._a_id}'s oeo requiring actions: {a_oeo_requiring_actions}")
+        logger.debug(f"{self._b_id}'s oeo requiring actions: {b_oeo_requiring_actions}")
         a_actions = self._poll_actions(self._a_id, a_oeo_requiring_actions)
         b_actions = self._poll_actions(self._b_id, b_oeo_requiring_actions)
-        logger.info("{0}'s actions chosen: {1}".format(self._a_id, a_actions))
-        logger.info("{0}'s actions chosen: {1}".format(self._b_id, b_actions))
+        logger.info(f"{self._a_id}'s actions chosen: {a_actions}")
+        logger.info(f"{self._b_id}'s actions chosen: {b_actions}")
 
         # For each {oeo_id: action} in dictionary returned by the event handlers, add it to the action map if
         # the oeo does not already have an action for this turn in the action map
         for oeo_id, action in itertools.chain(a_actions.items(), b_actions.items()):
             if action_map[oeo_id] is not None:
-                raise Exception("{0} already had an action for this turn".format(oeo_id))
+                raise Exception(f"{oeo_id} already had an action for this turn")
             action_map[oeo_id] = action
-        logger.debug("Final action map for turn {0}: {1}".format(self._turn_number, action_map))
+        logger.debug(f"Final action map for turn {self._turn_number}: {action_map}")
 
         # For each {oeo_id: action} in the action map add the SimEvent for the action to the pending sim events queue
         for oeo_id, action in action_map.items():
@@ -333,17 +332,17 @@ class Battle(object):
         Polls for actions from team_id
         :return: dict of oeo_id:action
         """
-        logger.debug("Polling for actions from {0}".format(team_id))
+        logger.debug(f"Polling for actions from {team_id}")
         results = self.event_choose_actions(team_id, oeo_requiring_actions)
         flag, result, handler = results[0]
         if flag:
             for oeo_id, action in result.items():
                 # Ensure oeo is on the field
                 if not self._is_fielded(oeo_id):
-                    raise Exception("{0} is not on the field".format(oeo_id))
+                    raise Exception(f"{oeo_id} is not on the field")
                 # Ensure oeo is in team_id
                 if oeo_id not in self.teams[team_id]:
-                    raise Exception("{0} is not on {1}'s side".format(oeo_id, team_id))
+                    raise Exception(f"{oeo_id} is not on {team_id}'s side")
                 # Ensure action is SimEvent
                 if not isinstance(action, SimEvent):
                     raise Exception("Action is not a SimEvent")

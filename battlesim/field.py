@@ -15,25 +15,25 @@ class Field(object):
         try:
             return self._field[item]
         except KeyError as e:
-            logger.error("Team id:{0} not on field".format(item))
-            raise Exception("Team id:{0} not on field".format(item)) from e
+            logger.error(f"Team id:{item} not on field")
+            raise Exception(f"Team id:{item} not on field") from e
 
     def deploy(self, team_id, oeo_id, position):
         try:
             self._field[team_id].deploy(oeo_id, position)
-            logger.info("{0} deployed {1} to position {2}".format(team_id, oeo_id, position))
+            logger.info(f"{team_id} deployed {oeo_id} to position {position}")
         except KeyError as e:
-            logger.error("Team id:{0} not on field".format(team_id))
-            raise Exception("Team id:{0} not on field".format(team_id)) from e
+            logger.error(f"Team id:{team_id} not on field")
+            raise Exception(f"Team id:{team_id} not on field") from e
 
     def withdraw(self, team_id, oeo_id):
         try:
             position = self._field[team_id].index(oeo_id)
             self._field[team_id].withdraw(oeo_id)
-            logger.info("{0} withdrew {1} from position {2}".format(team_id, oeo_id, position))
+            logger.info(f"{team_id} withdrew {oeo_id} from position {position}")
         except KeyError as e:
-            logger.error("Team id:{0} not on field".format(team_id))
-            raise Exception("Team id:{0} not on field".format(team_id)) from e
+            logger.error(f"Team id:{team_id} not on field")
+            raise Exception(f"Team id:{team_id} not on field") from e
 
 
 class Side(object):

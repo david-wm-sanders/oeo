@@ -25,13 +25,13 @@ class Move(object):
         try:
             self._element = Element[element]
         except KeyError:
-            logger.error("{0} is not a valid Element".format(element))
-            raise Exception("{0} is not a valid Element".format(element))
+            logger.error(f"{element} is not a valid Element")
+            raise Exception(f"{element} is not a valid Element")
         try:
             self._category = MoveCategory[category]
         except KeyError:
-            logger.error("{0} is not a valid MoveCategory".format(category))
-            raise Exception("{0} is not a valid MoveCategory".format(category))
+            logger.error(f"{category} is not a valid MoveCategory")
+            raise Exception(f"{category} is not a valid MoveCategory")
         self._power = power
         self._accuracy = accuracy
         self._makes_contact = makes_contact
@@ -87,8 +87,8 @@ class Move(object):
             priority = move_data.get("priority", 0)
             stages = move_data.get("stages", [])
         except KeyError as e:
-            logger.error("Move data for '{0}' is missing a value for {1}".format(move_name, e))
-            raise Exception("Move data for '{0}' is missing a value for {1}".format(move_name, e)) from e
+            logger.error(f"Move data for '{move_name}' is missing a value for {e}")
+            raise Exception(f"Move data for '{move_name}' is missing a value for {e}") from e
         else:
             return cls(move_name, element, category, power, accuracy, makes_contact, priority, stages)
 
@@ -96,12 +96,12 @@ class Move(object):
     def load_moves(list_moves):
         moves = {}
         for move_name in list_moves:
-            m = Move.data_root / "{0}.json".format(move_name)
+            m = Move.data_root / f"{move_name}.json"
             if m.exists():
                 with m.open() as f:
                     move = json.load(f, object_hook=Move.from_json_dict)
                     if move:
                         moves[move_name] = move
             else:
-                raise Exception("{0} does not exist".format(m))
+                raise Exception(f"{m} does not exist")
         return moves

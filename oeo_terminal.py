@@ -13,6 +13,7 @@ logger.debug(f"Started logging in {__file__}")
 # spark_id, buzz_id = uuid4().hex[8:-8], uuid4().hex[8:-8]
 spark_id, buzz_id = None, None
 
+
 def main():
     print("oeo Terminal Battle Arena!")
     global spark_id, buzz_id
@@ -25,7 +26,7 @@ def main():
     # gla = Oeo(gla_id, "Icicle", "gla", 78, 78, None, ivs, evs, ["Freeze Bite"], None, None)
     # # gla = Oeo.load(path / "409a43ec9b5fd540.json")
     # gla._oeo_id = gla_id
-    # logger.debug("{0}".format(gla))
+    # logger.debug(f"{gla}")
 
     spark = Oeo.create("Chikaphu", "Spark", 5, 5)
     spark_id = spark.oeo_id
@@ -67,7 +68,7 @@ def choose_oeo_to_deploy(team_id, non_fielded_team, empty_positions):
     else:
         raise Exception("Invalid team_id")
 
-    print("{0} can deploy {1} to empty positions {2}".format(team_id, non_fielded_team, empty_positions))
+    print(f"{team_id} can deploy {non_fielded_team} to empty positions {empty_positions}")
     print("Deploy>> oeo id>position, oeo id>position, ...")
     i = input("Deploy>> ")
     i = i.replace(" ", "")
@@ -87,10 +88,10 @@ def choose_actions(team_id, eligible_actors):
     else:
         raise Exception("Invalid team_id")
 
-    print("{0}'s team need orders for the turn".format(team_id))
+    print(f"{team_id}'s team need orders for the turn")
     d = {}
     for actor in eligible_actors:
-        print("What action should {0} perform? move|item".format(actor))
+        print(f"What action should {actor} perform? move|item")
         action = input("Action>> ")
         if action == "move":
             move = input("Move>> ")
@@ -101,7 +102,7 @@ def choose_actions(team_id, eligible_actors):
         elif action == "item":
             raise NotImplementedError()
         else:
-            raise Exception("Specified action '{0}' does not exist".format(action))
+            raise Exception(f"Specified action '{action}' does not exist")
     return d
 
 

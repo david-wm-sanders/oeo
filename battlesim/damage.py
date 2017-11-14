@@ -28,29 +28,24 @@ def calculate_standard_damage(user, move, target):
     assert isinstance(target, Oeo), "target is not an Oeo"
 
     stab = _same_type_attack_bonus(move.element, user.elements)
-    logger.debug("STAB for {0} Oeo using {1} Move = {2}".format("/".join([str(e.name) for e in user.elements]),
-                                                                move.element.name, stab))
+    user_elements = "/".join([str(e.name) for e in user.elements])
+    logger.debug(f"STAB for {user_elements} Oeo using a {move.element.name} Move = {stab}")
 
     element_effectiveness = _element_effectiveness(move.element, target.elements)
-    logger.debug("Element Effectiveness of a {0} Move against a {1} Oeo = {2}".format(move.element.name,
-                                                                                      "/".join(
-                                                                                          [str(e.name) for e in
-                                                                                           target.elements]),
-                                                                                      element_effectiveness))
+    target_elements = "/".join([str(e.name) for e in target.elements])
+    logger.debug(f"Element Effectiveness of a {move.element.name} Move against a {target_elements} Oeo = {element_effectiveness}")
 
     critical_modifier = _critical_modifier(user, move, target)
-    logger.debug("Critical Modifier = {0}".format(critical_modifier))
+    logger.debug(f"Critical Modifier = {critical_modifier}")
 
     other = _other_modifiers(user, move, target)
-    logger.debug("Other Modifiers = {0}".format(other))
+    logger.debug(f"Other Modifiers = {other}")
 
     randomness_factor = _randomness_factor(0.85, 1.0)
-    logger.debug("Randomness Factor = {0}".format(randomness_factor))
+    logger.debug(f"Randomness Factor = {randomness_factor}")
 
     modifier = stab * element_effectiveness * critical_modifier * other * randomness_factor
-    logger.debug("Damage Modifier = {0}*{1}*{2}*{3}*{4} = {5}".format(stab, element_effectiveness,
-                                                                      critical_modifier, other, randomness_factor,
-                                                                      modifier))
+    logger.debug(f"Damage Modifier = {stab}*{element_effectiveness}*{critical_modifier}*{other}*{randomness_factor} = {modifier}")
 
     if move.category == MoveCategory.Physical:
         attack = user.attack
@@ -61,11 +56,10 @@ def calculate_standard_damage(user, move, target):
     else:
         raise Exception("Move is neither Physical nor Special - why is this function running?")
     raw_damage = ((2 * user.level + 10) / 250) * (attack / defence) * move.power + 2
-    logger.debug("Raw Damage = (2*{0}+10)/250*({1}/{2})*{3}+2 = {4}".format(user.level, attack, defence,
-                                                                            move.power, raw_damage))
+    logger.debug(f"Raw Damage = (2*{user.level}+10)/250*({attack}/{defence})*{move.power}+2 = {raw_damage}")
 
     damage = math.floor(raw_damage * modifier)
-    logger.debug("Damage = floor({0}*{1}) = {2}".format(raw_damage, modifier, damage))
+    logger.debug(f"Damage = floor({raw_damage}*{modifier}) = {damage}")
 
     return damage
 
